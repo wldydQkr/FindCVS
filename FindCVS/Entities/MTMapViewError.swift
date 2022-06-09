@@ -11,7 +11,7 @@ enum MTMapViewError: Error {
     case faileUpdatingCurrentLocation
     case locationAuthorizaationDenied
     
-    var errprDescription: String {
+    var errorDescription: String {
         switch self {
         case .faileUpdatingCurrentLocation:
             return "현재 위치를 불러오지 못했습니다. 잠시 후 다시 시도해주세요."
