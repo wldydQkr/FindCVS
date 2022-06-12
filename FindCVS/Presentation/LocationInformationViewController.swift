@@ -2,7 +2,7 @@
 //  LocationInformationViewController.swift
 //  FindCVS
 //
-//  Created by 박지용 on 2022/06/09.
+//  Created by Bo-Young PARK on 2021/09/26.
 //
 
 import UIKit
@@ -12,12 +12,13 @@ import RxCocoa
 import SnapKit
 
 class LocationInformationViewController: UIViewController {
-    let dispseBag = DisposeBag()
+    let disposeBag = DisposeBag()
     
     let locationManager = CLLocationManager()
     let mapView = MTMapView()
     let currentLocationButton = UIButton()
     let detailList = UITableView()
+    let detailListBackgroundView = DetailListBackgroundView()
     let viewModel = LocationInformationViewModel()
     
     override func viewDidLoad() {
@@ -32,17 +33,42 @@ class LocationInformationViewController: UIViewController {
     }
     
     private func bind(_ viewModel: LocationInformationViewModel) {
+        detailListBackgroundView.bind(viewModel.detailListBackgroundViewModel)
         viewModel.setMapCenter
             .emit(to: mapView.rx.setMapCenterPoint)
-            .disposed(by: dispseBag)
+            .disposed(by: disposeBag)
         
         viewModel.errorMessage
             .emit(to: self.rx.presentAlert)
-            .disposed(by: dispseBag)
+            .disposed(by: disposeBag)
+        
+        viewModel.detailListCellData
+            .drive(detailList.rx.items) { tv, row, data in
+                let cell = tv.dequeueReusableCell(withIdentifier: "DetailListCell", for: IndexPath(row: row, section: 0)) as! DetailListCell
+                
+                cell.setData(data)
+                
+                return cell
+            }
+            .disposed(by: disposeBag)
+        
+        viewModel.detailListCellData
+            .map { $0.compactMap { $0.point} }
+            .drive(self.rx.addPOIItems)
+            .disposed(by: disposeBag)
+        
+        viewModel.scrollToSelectedLocation
+            .emit(to: self.rx.showSelectedLocation)
+            .disposed(by: disposeBag)
+        
+        detailList.rx.itemSelected
+            .map { $0.row }
+            .bind(to: viewModel.detailListItemSelected)
+            .disposed(by: disposeBag)
         
         currentLocationButton.rx.tap
             .bind(to: viewModel.currentLocationButtonTapped)
-            .disposed(by: dispseBag)
+            .disposed(by: disposeBag)
     }
     
     private func attribute() {
@@ -54,6 +80,10 @@ class LocationInformationViewController: UIViewController {
         currentLocationButton.setImage(UIImage(systemName: "location.fill"), for: .normal)
         currentLocationButton.backgroundColor = .white
         currentLocationButton.layer.cornerRadius = 20
+        
+        detailList.register(DetailListCell.self, forCellReuseIdentifier: "DetailListCell")
+        detailList.separatorStyle = .none
+        detailList.backgroundView = detailListBackgroundView
     }
     
     private func layout() {
@@ -102,21 +132,17 @@ extension LocationInformationViewController: MTMapViewDelegate {
         #endif
     }
     
-    
-    // 동작이 끝났을 때 센터 포인트를 지정해줌
     func mapView(_ mapView: MTMapView!, finishedMapMoveAnimation mapCenterPoint: MTMapPoint!) {
-         viewModel.mapCenterPoint.accept(mapCenterPoint)
+        viewModel.mapCenterPoint.accept(mapCenterPoint)
     }
     
-    // 핀을 탭할때마다 MTMapPOIItem을 전달
     func mapView(_ mapView: MTMapView!, selectedPOIItem poiItem: MTMapPOIItem!) -> Bool {
-         viewModel.selectPOIItem.accept(poiItem)
+        viewModel.selectPOIItem.accept(poiItem)
         return false
     }
     
-    // 제대로 된 현재위치를 불러오지 못했을 때 에러를 반환해줌
     func mapView(_ mapView: MTMapView!, failedUpdatingCurrentLocationWithError error: Error!) {
-         viewModel.mapViewError.accept(error.localizedDescription)
+        viewModel.mapViewError.accept(error.localizedDescription)
     }
 }
 
@@ -131,13 +157,40 @@ extension Reactive where Base: MTMapView {
 extension Reactive where Base: LocationInformationViewController {
     var presentAlert: Binder<String> {
         return Binder(base) { base, message in
-            let alertController = UIAlertController(title: "문제가 발생했습니다.", message: message, preferredStyle: .alert)
-        
-        let action = UIAlertAction(title: "확인", style: .default, handler: nil)
-        
+            let alertController = UIAlertController(title: "문제가 발생했어요", message: message, preferredStyle: .alert)
+            
+            let action = UIAlertAction(title: "확인", style: .default, handler: nil)
+            
             alertController.addAction(action)
             
             base.present(alertController, animated: true, completion: nil)
+        }
+    }
+    
+    var showSelectedLocation: Binder<Int> {
+        return Binder(base) { base, row in
+            let indexPath  = IndexPath(row: row, section: 0)
+            base.detailList.selectRow(at: indexPath, animated: true, scrollPosition: .top)
+        }
+    }
+    
+    var addPOIItems: Binder<[MTMapPoint]> {
+        return Binder(base) { base, points in
+            let items = points
+                .enumerated()
+                .map { offset, point -> MTMapPOIItem in
+                    let mapPOIItem = MTMapPOIItem()
+                    
+                    mapPOIItem.mapPoint = point
+                    mapPOIItem.markerType = .redPin
+                    mapPOIItem.showAnimationType = .springFromGround
+                    mapPOIItem.tag = offset
+                    
+                    return mapPOIItem
+                }
+            
+            base.mapView.removeAllPOIItems()
+            base.mapView.addPOIItems(items)
         }
     }
 }
