@@ -16,6 +16,7 @@
 		C08245682856047E0088F3DC /* Dummy.swift in Sources */ = {isa = PBXBuildFile; fileRef = C08245672856047E0088F3DC /* Dummy.swift */; };
 		C082456C285605FC0088F3DC /* LocationInformationModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C082456B285605FC0088F3DC /* LocationInformationModelTests.swift */; };
 		C082457228560C550088F3DC /* LocationInformationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C082457128560C550088F3DC /* LocationInformationModel.swift */; };
+		C0824574285A370D0088F3DC /* LocationInformationViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0824573285A370D0088F3DC /* LocationInformationViewModelTests.swift */; };
 		C0EC53772850EB9700F2C42D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0EC53762850EB9700F2C42D /* AppDelegate.swift */; };
 		C0EC53792850EB9700F2C42D /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0EC53782850EB9700F2C42D /* SceneDelegate.swift */; };
 		C0EC53802850EB9900F2C42D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C0EC537F2850EB9900F2C42D /* Assets.xcassets */; };
@@ -90,6 +91,7 @@
 		C08245672856047E0088F3DC /* Dummy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dummy.swift; sourceTree = "<group>"; };
 		C082456B285605FC0088F3DC /* LocationInformationModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationInformationModelTests.swift; sourceTree = "<group>"; };
 		C082457128560C550088F3DC /* LocationInformationModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LocationInformationModel.swift; path = ../../../../../../../.Trash/LocationInformationModel.swift; sourceTree = "<group>"; };
+		C0824573285A370D0088F3DC /* LocationInformationViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationInformationViewModelTests.swift; sourceTree = "<group>"; };
 		C0EC53732850EB9700F2C42D /* FindCVS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FindCVS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C0EC53762850EB9700F2C42D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C0EC53782850EB9700F2C42D /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -188,6 +190,7 @@
 				C0824565285603490088F3DC /* Networkdummy.json */,
 				C08245672856047E0088F3DC /* Dummy.swift */,
 				C082456B285605FC0088F3DC /* LocationInformationModelTests.swift */,
+				C0824573285A370D0088F3DC /* LocationInformationViewModelTests.swift */,
 			);
 			path = FindCVSTests;
 			sourceTree = "<group>";
@@ -571,6 +574,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C0824574285A370D0088F3DC /* LocationInformationViewModelTests.swift in Sources */,
 				C08245682856047E0088F3DC /* Dummy.swift in Sources */,
 				C082455F2855FFE70088F3DC /* LocalNetworkStub.swift in Sources */,
 				C082456C285605FC0088F3DC /* LocationInformationModelTests.swift in Sources */,
